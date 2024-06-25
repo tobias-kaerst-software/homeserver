@@ -1,0 +1,38 @@
+- name: Ensure the root group exists
+  ansible.builtin.group:
+    name: "root"
+    state: present
+
+- name: Allow sudo group to have passwordless sudo
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: "^%root"
+    line: "%root ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"
+
+- name: Create a login user
+  changed_when: false
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    password: "{{ ansible_password | string | password_hash('sha512') }}"
+    groups:
+      - root
+      - users
+    state: present
+    append: true
+    shell: "{{ user_shell }}"
+
+- name: "Ensure group exists: {{ ansible_user }}"
+  ansible.builtin.group:
+    name: "{{ ansible_user }}"
+    state: present
+
+- name: Chmod the user home directory
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    recurse: true

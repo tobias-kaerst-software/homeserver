@@ -1,0 +1,12 @@
+- name: Install and configure ansible-easy-vpn
+  hosts: all
+  become: true
+
+  roles:
+    - role: system
+      tags:
+        - system
+
+    - role: hello-world
+      tags:
+        - hello-world

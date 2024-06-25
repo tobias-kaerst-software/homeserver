@@ -1,0 +1,36 @@
+- name: Add Docker GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}/gpg
+    state: present
+
+- name: Add Docker Repository
+  ansible.builtin.apt_repository:
+    state: present
+    repo: >
+      deb [arch={{ [ansible_architecture] | map('extract', system_deb_architecture) | first }}]
+      https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}
+      {{ ansible_lsb['codename'] }} stable
+
+- name: Attempt docker installation
+  ansible.builtin.apt:
+    update_cache: true
+    state: present
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - docker-compose
+      - containerd.io
+
+- name: "Add user to group docker: {{ ansible_user }}"
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    append: true
+    groups:
+      - docker
+
+- name: Make sure Docker is running and enabled
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    daemon_reload: true
+    enabled: true

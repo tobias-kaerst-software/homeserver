@@ -1,0 +1,24 @@
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  install:
+    desc: Installs the ansible and pip dependencies
+    cmds:
+      - python3 -m venv .venv
+      - source .venv/bin/activate
+      - pip install -r requirements.txt
+      - ansible-galaxy install -r requirements.yml
+
+  test:
+    desc: Tests the ansible connections
+    cmds:
+      - ansible all -m ping
+
+  run:
+    desc: Runs the ansible deployment playbook
+    cmds:
+      - ansible-playbook deploy.yml

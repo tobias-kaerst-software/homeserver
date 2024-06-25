@@ -1,0 +1,66 @@
+- name: Check if there's authorized_keys
+  ansible.builtin.stat:
+    path: /home/{{ ansible_user }}/.ssh/authorized_keys
+  register: ssh_authorized_keys
+  changed_when: (not ssh_authorized_keys.stat.exists) or (ssh_authorized_keys.stat.size == 0)
+
+- name: Create the SSH directory
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/.ssh"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0700"
+
+- name: Install the existing public key
+  when: ssh_public_key is defined
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ ssh_public_key }}"
+
+- name: Update SSH configuration to be more secure
+  register: ssh_config
+  ansible.builtin.lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: "sshd -T -f %s"
+    mode: "0644"
+  with_items:
+    - regexp: "^#?PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^#?PermitRootLogin"
+      line: "PermitRootLogin no"
+    - regexp: "^#?Port"
+      line: "Port {{ ssh_port }}"
+    - regexp: "^#?PermitEmptyPasswords"
+      line: "PermitEmptyPasswords no"
+    - regexp: "^#?X11Forwarding"
+      line: "X11Forwarding no"
+
+- name: Notify user about changes
+  when: (ssh_config.changed or ssh_authorized_keys.changed)
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+
+- name: Schedule a reboot if required
+  when: (ssh_config.changed or ssh_authorized_keys.changed)
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: ssh_reboot_required
+
+- name: Display user instructions
+  when: (ssh_config.changed or ssh_authorized_keys.changed) and ssh_public_key is defined
+  ansible.builtin.pause:
+    prompt: |
+      Almost done! Make sure to test your SSH connection in a new terminal window. After ensuring that it works,
+      return to this terminal window and press [Enter]
+      Your system will {{ ssh_notify_action }}. You will be logged out automatically.
+
+- name: Reboot the system if updates are pending
+  when: (ssh_config.changed or ssh_authorized_keys.changed) and ssh_reboot_required.stat.exists
+  changed_when: true
+  ansible.builtin.command:
+    cmd: reboot

@@ -1,0 +1,27 @@
+all:
+  hosts:
+    default:
+      ansible_host: ___
+      ansible_port: 22
+      ansible_user: ___
+      user_shell: /bin/bash
+      ansible_password: ___
+      ansible_become: true
+      ansible_become_password: ___
+      ansible_python_interpreter: /usr/bin/python3
+
+  vars:
+    ssh_port: 22
+    ssh_public_key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+    autoupdate_reboot_time: 06:00
+    iptables_allow_rules:
+      - desc: "Allow HTTP"
+        proto: tcp
+        port: "80"
+      - desc: "Allow HTTPS"
+        proto: tcp
+        port: "443"
+      - desc: "Allow SSH"
+        proto: tcp
+        port: "{{ ssh_port }}"

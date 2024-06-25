@@ -1,0 +1,29 @@
+# Currently fail2ban does not work with the latest version of Ubuntu, so we need to install this workaround from here
+# https://github.com/fail2ban/fail2ban/issues/3487
+- name: Install fail2ban
+  ansible.builtin.apt:
+    deb: "https://launchpad.net/ubuntu/+source/fail2ban/1.1.0-1/+build/28291332/+files/fail2ban_1.1.0-1_all.deb"
+
+# - name: Install fail2ban
+#   ansible.builtin.package:
+#     name: fail2ban
+#     state: present
+
+- name: Install the jail.local file
+  ansible.builtin.template:
+    src: "jail.local.j2"
+    dest: "/etc/fail2ban/jail.local"
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Restart fail2ban
+  ansible.builtin.service:
+    name: fail2ban
+    state: restarted
+
+- name: Make sure the fail2ban systemd service is enabled and started
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: true
