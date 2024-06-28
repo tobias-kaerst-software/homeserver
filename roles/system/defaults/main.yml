@@ -8,3 +8,5 @@ system_deb_architecture:
     "armhf": "armel",
     "armel": "armel",
   }
+
+system_docker_network_name: "default"

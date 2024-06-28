@@ -1,0 +1,15 @@
+- name: Start Traefik container
+  community.docker.docker_container:
+    name: "{{ traefik_container_name }}"
+    image: "{{ traefik_image_name }}:{{ traefik_image_version }}"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "853:853"
+    volumes:
+      - "{{ docker_path }}/traefik:/etc/traefik"
+      - "{{ docker_path }}/traefik/certificates:/certs"
+      - "{{ docker_socket }}:/var/run/docker.sock:ro"
+    networks:
+      - default

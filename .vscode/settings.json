@@ -1,42 +1,28 @@
 {
   // !Editor settings
-  "cSpell.language": "en,de-de",
+  "cSpell.language": "en,de",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit"
   },
-  "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairs": true,
-  "terminal.integrated.gpuAcceleration": "off",
 
   //! Explorer
+  "files.exclude": { "**/.venv": true },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "README.md": "LICENSE",
     "Taskfile.yml": ".gitignore,.editorconfig",
-    "package.json": ".gitignore,tsconfig.json,pnpm-workspace.yaml,.env.local,bun.lockb",
     "ansible.cfg": "requirements.yml,requirements.txt",
     "deploy.yml": "inventory.yml,inventory.example.yml"
   },
 
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "**/Thumbs.db": true,
-    "**/__pycache__": true,
-    "**/node_modules": true,
-    "**/pnpm-lock.yaml": true,
-    "**/.venv": true
-  },
-
   //! Ansible
   "ansible.ansible.path": ".venv/bin/ansible",
-  "ansible.python.interpreterPath": ".venv/bin/python",
+  "ansible.python.interpreterPath": "/Users/tobias.kaerst/Documents/projects/nas/.venv/bin/python",
 
   //! Formatters
   "[json][jsonc][html]": {
