@@ -1,0 +1,7 @@
+- name: Add DNS record
+  ansible.builtin.uri:
+    url:
+      "https://api.namecheap.com/xml.response?apiuser={{ acme_user }}&apikey={{ acme_api_key }}&username={{ acme_user }}\
+      &Command=namecheap.domains.dns.setHosts&ClientIp={{ client_ip }}&SLD={{ host }}&TLD={{ domain }}\
+      &HostName1=@&RecordType1=A&Address1={{ ansible_host }}&TTL1=100\
+      &HostName2=*&RecordType2=A&Address2={{ ansible_host }}&TTL2=100"

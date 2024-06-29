@@ -1,5 +1,0 @@
-- name: Start hello world container
-  community.docker.docker_container:
-    image: hello-world
-    name: hello-world
-    auto_remove: true

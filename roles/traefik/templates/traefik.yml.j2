@@ -1,0 +1,40 @@
+global:
+  sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entrypoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: :443
+    http:
+      tls: 
+        certResolver: letsencrypt
+        domains:
+          - main: "{{ hostname }}"
+            sans: "*.{{ hostname }}"
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "{{ acme_email }}"
+      storage: "/etc/traefik/acme.json"
+      dnsChallenge:
+        provider: namecheap
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+
+api:
+  dashboard: true
+
+providers:
+  docker: {}
+  file:
+    directory: /etc/traefik
+    watch: true

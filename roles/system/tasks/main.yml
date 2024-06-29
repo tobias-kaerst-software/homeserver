@@ -13,5 +13,8 @@
 - name: Configure the user account
   ansible.builtin.include_tasks: user.yml
 
+- name: Add DNS records
+  ansible.builtin.include_tasks: dns.yml
+
 - name: Configure secure ssh
   ansible.builtin.include_tasks: ssh.yml

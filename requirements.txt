@@ -1,2 +1,3 @@
 passlib
 ansible
+ansible-lint
