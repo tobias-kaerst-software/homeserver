@@ -22,7 +22,6 @@
     ports:
       - "80:80"
       - "443:443"
-      - "853:853"
     volumes:
       - "{{ config_path }}/traefik:/etc/traefik"
       - "{{ docker_socket }}:/var/run/docker.sock:ro"
