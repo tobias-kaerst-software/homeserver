@@ -1,0 +1,23 @@
+- name: Start minecraft server
+  when: minecraft_enabled is true
+  block:
+    - name: Start minecraft server container
+      community.docker.docker_container:
+        name: "{{ minecraft_container_name }}"
+        image: "{{ minecraft_image_name }}:{{ minecraft_image_version }}"
+        restart_policy: unless-stopped
+        ports:
+          - "25565:25565"
+        volumes:
+          - "{{ config_path }}/minecraft:/data:rw"
+        networks:
+          - name: "{{ docker_network_name }}"
+        env: "{{ minecraft_environment_variables }}"
+
+- name: Stop minecraft server
+  when: minecraft_enabled is false
+  block:
+    - name: Stop minecraft server container
+      community.docker.docker_container:
+        name: "{{ minecraft_container_name }}"
+        state: absent

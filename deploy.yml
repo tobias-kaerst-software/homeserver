@@ -6,3 +6,4 @@
     - role: traefik
     - role: watchtower
     - role: homepage
+    - role: minecraft

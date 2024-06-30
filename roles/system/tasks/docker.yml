@@ -37,4 +37,4 @@
 
 - name: Create the nas network
   community.general.docker_network:
-    name: "{{ system_docker_network_name }}"
+    name: "{{ docker_network_name }}"
