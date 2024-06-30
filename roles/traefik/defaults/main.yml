@@ -1,4 +1,5 @@
+traefik_enabled: true
+
 traefik_container_name: "traefik"
 traefik_image_name: "traefik"
 traefik_image_version: "latest"
-traefik_host: "traefik"

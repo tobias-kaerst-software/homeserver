@@ -1,0 +1,6 @@
+watchtower_enabled: true
+
+watchtower_container_name: "watchtower"
+watchtower_image_name: "containrrr/watchtower"
+watchtower_image_version: "latest"
+watchtower_schedule: "0 0 * * * *"

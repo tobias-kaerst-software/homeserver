@@ -1,0 +1,5 @@
+homepage_enabled: true
+
+homepage_container_name: "homepage"
+homepage_image_name: "ghcr.io/gethomepage/homepage"
+homepage_image_version: "latest"

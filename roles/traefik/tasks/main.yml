@@ -1,36 +1,47 @@
-- name: Ensure traefik config directory
-  ansible.builtin.file:
-    path: "{{ config_path }}/traefik"
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "0700"
+- name: Start traefik
+  when: traefik_enabled is true
+  block:
+    - name: Ensure traefik config directory
+      ansible.builtin.file:
+        path: "{{ config_path }}/traefik"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
 
-- name: Copy traefik configuration
-  ansible.builtin.template:
-    src: "traefik.yml.j2"
-    dest: "{{ config_path }}/traefik/traefik.yml"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "0700"
+    - name: Copy traefik configuration
+      ansible.builtin.template:
+        src: "traefik.yml.j2"
+        dest: "{{ config_path }}/traefik/traefik.yml"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
 
-- name: Start Traefik container
-  community.docker.docker_container:
-    name: "{{ traefik_container_name }}"
-    image: "{{ traefik_image_name }}:{{ traefik_image_version }}"
-    restart_policy: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "{{ config_path }}/traefik:/etc/traefik"
-      - "{{ docker_socket }}:/var/run/docker.sock:ro"
-    networks:
-      - name: "{{ docker_network_name }}"
-    env:
-      NAMECHEAP_API_USER: "{{ acme_user }}"
-      NAMECHEAP_API_KEY: "{{ acme_api_key }}"
-    labels:
-      traefik.http.routers.traefik.entrypoints: websecure
-      traefik.http.routers.traefik.rule: Host(`{{ traefik_host }}.{{ hostname }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
-      traefik.http.routers.traefik.service: api@internal
+    - name: Start traefik container
+      community.docker.docker_container:
+        name: "{{ traefik_container_name }}"
+        image: "{{ traefik_image_name }}:{{ traefik_image_version }}"
+        restart_policy: unless-stopped
+        ports:
+          - "80:80"
+          - "443:443"
+        volumes:
+          - "{{ config_path }}/traefik:/etc/traefik"
+          - "{{ docker_socket }}:/var/run/docker.sock:ro"
+        networks:
+          - name: "{{ docker_network_name }}"
+        env:
+          NAMECHEAP_API_USER: "{{ acme_user }}"
+          NAMECHEAP_API_KEY: "{{ acme_api_key }}"
+        labels:
+          traefik.http.routers.traefik.entrypoints: websecure
+          traefik.http.routers.traefik.rule: Host(`{{ traefik_container_name }}.{{ hostname }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+          traefik.http.routers.traefik.service: api@internal
+
+- name: Stop traefik
+  when: traefik_enabled is false
+  block:
+    - name: Stop traefik container
+      community.docker.docker_container:
+        name: "{{ traefik_container_name }}"
+        state: absent

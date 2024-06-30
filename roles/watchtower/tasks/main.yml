@@ -1,0 +1,30 @@
+- name: Start Watchtower
+  when: watchtower_enabled is true
+  block:
+    - name: Start watchtower container
+      community.docker.docker_container:
+        name: "{{ watchtower_container_name }}"
+        image: "{{ watchtower_image_name }}:{{ watchtower_image_version }}"
+        restart_policy: unless-stopped
+        volumes:
+          - "{{ docker_socket }}:/var/run/docker.sock:ro"
+        networks:
+          - name: "{{ docker_network_name }}"
+        env:
+          TZ: "{{ timezone }}"
+          WATCHTOWER_SCHEDULE: "{{ watchtower_schedule }}"
+          WATCHTOWER_HTTP_API_TOKEN: "{{ watchtower_token }}"
+          WATCHTOWER_HTTP_API_METRICS: "true"
+          WATCHTOWER_CLEANUP: "true"
+          WATCHTOWER_REMOVE_VOLUMES: "true"
+        labels:
+          traefik.http.routers.watchtower.entrypoints: websecure
+          traefik.http.routers.watchtower.rule: Host(`{{ watchtower_container_name }}.{{ hostname }}`) && PathPrefix(`/v1/metrics`)
+
+- name: Stop Watchtower
+  when: watchtower_enabled is false
+  block:
+    - name: Stop Watchtower container
+      community.docker.docker_container:
+        name: "{{ watchtower_container_name }}"
+        state: absent

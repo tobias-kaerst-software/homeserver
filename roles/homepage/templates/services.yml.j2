@@ -1,0 +1,30 @@
+- Management:
+    - Traefik:
+        icon: traefik.svg
+        href: "https://{{ traefik_container_name }}.{{ hostname }}/dashboard/"
+        description: Reverse proxy and load balancer.
+        siteMonitor: "https://{{ traefik_container_name }}.{{ hostname }}/dashboard/"
+        container: "{{ traefik_container_name }}"
+        widget:
+          type: traefik
+          url: "https://{{ traefik_container_name }}.{{ hostname }}"
+    - Fritzbox:
+        icon:  avmfritzbox.svg
+        href: "http://{{ router_host }}"
+        description: Manage your router.
+        siteMonitor: "http://{{ router_host }}"
+        widget:
+          type: fritzbox
+          url: "http://{{ router_host }}"
+
+- Metrics:
+    - Watchtower:
+        icon: watchtower.svg
+        description: Keep containers up to date.
+        siteMonitor: "https://{{ watchtower_container_name }}.{{ hostname }}/v1/metrics"
+        container: "{{ watchtower_container_name }}"
+        widget:
+          type: watchtower
+          url: "https://{{ watchtower_container_name }}.{{ hostname }}"
+          key: "{{ watchtower_token }}"
+

@@ -1,0 +1,12 @@
+- logo:
+    icon: /images/logo.svg
+
+- openweathermap:
+    label: "{{ location.label }}"
+    latitude: "{{ location.latitude }}"
+    longitude: "{{ location.longitude }}"
+    units: metric
+    provider: openweathermap
+    cache: 5
+    format:
+      maximumFractionDigits: 1

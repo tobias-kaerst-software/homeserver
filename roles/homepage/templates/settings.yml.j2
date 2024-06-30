@@ -1,0 +1,33 @@
+title: Homeserver
+base: "https://{{ hostname }}"
+language: "{{ language }}"
+
+providers:
+  openweathermap: "{{ openweather_api_key }}"
+
+favicon: /images/favicon.ico
+background:
+  image: /images/background.webp
+  saturate: 50
+  brightness: 75
+  opacity: 50
+
+iconStyle: theme
+theme: dark
+color: gray
+
+hideVersion: true
+headerStyle: clean
+
+cardBlur: sm
+useEqualHeights: true
+
+layout:
+  Management:
+    icon: si-openvpn
+    style: row
+    columns: 2
+  Metrics:
+    icon: si-graphql
+    style: column
+    rows: 1

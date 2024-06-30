@@ -1,6 +1,8 @@
-- name: Install and configure ansible-easy-vpn
+- name: Install and configure Homeserver
   hosts: all
   become: true
   roles:
     # - role: system
     - role: traefik
+    - role: watchtower
+    - role: homepage
