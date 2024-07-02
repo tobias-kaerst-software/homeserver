@@ -43,16 +43,20 @@
       community.docker.docker_container:
         name: "{{ homepage_container_name }}"
         image: "{{ homepage_image_name }}:{{ homepage_image_version }}"
-        restart_policy: unless-stopped
         volumes:
           - "{{ config_path }}/homepage:/app/config"
           - "{{ config_path }}/homepage/images:/app/public/images"
           - "{{ docker_socket }}:/var/run/docker.sock:ro"
-        networks:
-          - name: "{{ docker_network_name }}"
         labels:
           traefik.http.routers.homepage.entrypoints: websecure
           traefik.http.routers.homepage.rule: Host(`{{ hostname }}`)
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "{{ docker_common_settings.user }}"
+        groups:
+          - "{{ docker_group_id }}"
 
 - name: Stop homepage
   when: homepage_enabled is false

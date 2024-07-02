@@ -2,8 +2,11 @@
   hosts: all
   become: true
   roles:
-    # - role: system
+    - role: system
+
     - role: traefik
     - role: watchtower
     - role: homepage
-    - role: minecraft
+
+    - role: loki
+    - role: grafana

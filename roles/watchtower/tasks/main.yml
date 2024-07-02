@@ -5,11 +5,8 @@
       community.docker.docker_container:
         name: "{{ watchtower_container_name }}"
         image: "{{ watchtower_image_name }}:{{ watchtower_image_version }}"
-        restart_policy: unless-stopped
         volumes:
           - "{{ docker_socket }}:/var/run/docker.sock:ro"
-        networks:
-          - name: "{{ docker_network_name }}"
         env:
           TZ: "{{ timezone }}"
           WATCHTOWER_SCHEDULE: "{{ watchtower_schedule }}"
@@ -20,6 +17,13 @@
         labels:
           traefik.http.routers.watchtower.entrypoints: websecure
           traefik.http.routers.watchtower.rule: Host(`{{ watchtower_container_name }}.{{ hostname }}`) && PathPrefix(`/v1/metrics`)
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "{{ docker_common_settings.user }}"
+        groups:
+          - "{{ docker_group_id }}"
 
 - name: Stop Watchtower
   when: watchtower_enabled is false

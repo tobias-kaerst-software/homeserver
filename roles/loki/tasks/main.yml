@@ -1,0 +1,52 @@
+- name: Start loki
+  when: loki_enabled is true
+  block:
+    - name: Install loki logging driver for docker
+      community.docker.docker_plugin:
+        plugin_name: grafana/loki-docker-driver
+        state: enable
+        alias: loki
+
+    - name: Ensure loki config directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/loki/settings"
+        - "{{ config_path }}/loki/data"
+
+    - name: Template traefik configuration
+      ansible.builtin.template:
+        src: "config.yml.j2"
+        dest: "{{ config_path }}/loki/settings/loki-config.yml"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start loki container
+      community.docker.docker_container:
+        name: "{{ loki_container_name }}"
+        image: "{{ loki_image_name }}:{{ loki_image_version }}"
+        volumes:
+          - "{{ config_path }}/loki/data:/etc/loki"
+          - "{{ config_path }}/loki/settings/loki-config.yml:/mnt/config/loki-config.yml"
+        command: -config.file=/mnt/config/loki-config.yml
+        labels:
+          traefik.http.routers.loki.entrypoints: websecure
+          traefik.http.routers.loki.rule: Host(`{{ loki_container_name }}.{{ hostname }}`)
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "{{ docker_common_settings.user }}"
+
+- name: Stop loki
+  when: loki_enabled is false
+  block:
+    - name: Stop loki container
+      community.docker.docker_container:
+        name: "{{ loki_container_name }}"
+        state: absent

@@ -1,20 +1,33 @@
-- name: Update the packages and configure auto-updates
-  ansible.builtin.include_tasks: setup.yml
+# - name: Update the packages and configure auto-updates
+#   ansible.builtin.include_tasks: setup.yml
+#
+# - name: Install docker
+#   ansible.builtin.include_tasks: docker.yml
+#
+# - name: Configure the firewall
+#   ansible.builtin.include_tasks: firewall.yml
+#
+# - name: Configure Fail2Ban
+#   ansible.builtin.include_tasks: fail2ban.yml
+#
+# - name: Configure the user account
+#   ansible.builtin.include_tasks: user.yml
+#
+# - name: Add DNS records
+#   ansible.builtin.include_tasks: dns.yml
+#
+# - name: Configure secure ssh
+#   ansible.builtin.include_tasks: ssh.yml
 
-- name: Install docker
-  ansible.builtin.include_tasks: docker.yml
+- name: Get all user infos
+  ansible.builtin.getent:
+    database: passwd
 
-- name: Configure the firewall
-  ansible.builtin.include_tasks: firewall.yml
+- name: Get all group infos
+  ansible.builtin.getent:
+    database: group
 
-- name: Configure Fail2Ban
-  ansible.builtin.include_tasks: fail2ban.yml
-
-- name: Configure the user account
-  ansible.builtin.include_tasks: user.yml
-
-- name: Add DNS records
-  ansible.builtin.include_tasks: dns.yml
-
-- name: Configure secure ssh
-  ansible.builtin.include_tasks: ssh.yml
+- name: Set docker group and user id
+  ansible.builtin.set_fact:
+    docker_group_id: "{{ getent_group['docker'].1 }}"
+    docker_user_id: "{{ getent_passwd[ansible_user].1 }}"

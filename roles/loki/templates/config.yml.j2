@@ -1,0 +1,56 @@
+auth_enabled: false
+
+server:
+  http_listen_port: {{ loki_http_port }}
+
+common:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+  path_prefix: /etc/loki
+
+schema_config:
+  configs:
+    - from: "2023-01-05"
+      index:
+        period: 24h
+        prefix: index_
+      object_store: filesystem
+      schema: v13
+      store: tsdb
+
+ruler:
+  storage:
+    type: local
+    local:
+      directory: /etc/loki/rules
+  rule_path: /etc/loki/rules-temp
+  alertmanager_url: http://localhost:9093
+  ring:
+    kvstore:
+      store: inmemory
+  enable_api: true
+
+storage_config:
+  tsdb_shipper:
+    active_index_directory: /etc/loki/tsdb-index
+    cache_location: /etc/loki/tsdb-cache
+    cache_ttl: 24h
+    shared_store: filesystem
+  filesystem:
+    directory: /etc/loki/chunks
+
+compactor:
+  working_directory: /etc/loki/tsdb-compactor
+  shared_store: filesystem
+
+query_scheduler:
+  max_outstanding_requests_per_tenant: 32768
+
+querier:
+  max_concurrent: 16
+
+analytics:
+  reporting_enabled: false

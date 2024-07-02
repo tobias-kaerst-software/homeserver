@@ -1,0 +1,58 @@
+- name: Start grafana
+  when: grafana_enabled is true
+  block:
+    - name: Check for loki installation
+      ansible.builtin.fail:
+        msg: "Grafana requires loki enabled and running, please set that up first."
+      when: loki_enabled is false
+
+    - name: Ensure grafana config directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/grafana/data"
+        - "{{ config_path }}/grafana/settings/datasources"
+
+    - name: Template grafana configuration
+      ansible.builtin.template:
+        src: "datasource.yml.j2"
+        dest: "{{ config_path }}/grafana/settings/datasources/datasource.yml"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Copy grafana configuration
+      ansible.builtin.copy:
+        src: "files/dashboards"
+        dest: "{{ config_path }}/grafana/settings/"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start grafana container
+      community.docker.docker_container:
+        name: "{{ grafana_container_name }}"
+        image: "{{ grafana_image_name }}:{{ grafana_image_version }}"
+        volumes:
+          - "{{ config_path }}/grafana/data:/var/lib/grafana"
+          - "{{ config_path }}/grafana/settings:/etc/grafana/provisioning"
+        labels:
+          traefik.http.routers.grafana.entrypoints: websecure
+          traefik.http.routers.grafana.rule: Host(`{{ grafana_container_name }}.{{ hostname }}`)
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "{{ docker_common_settings.user }}"
+
+- name: Stop grafana
+  when: grafana_enabled is false
+  block:
+    - name: Stop grafana container
+      community.docker.docker_container:
+        name: "{{ grafana_container_name }}"
+        state: absent
