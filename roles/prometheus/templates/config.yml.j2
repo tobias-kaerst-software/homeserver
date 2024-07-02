@@ -1,0 +1,26 @@
+global:
+  scrape_interval: {{ prometheus_collection_interval }} 
+  evaluation_interval: 15s 
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:{{ prometheus_http_port}}"]
+
+  - job_name: "traefik"
+    static_configs:
+      - targets: ["{{ traefik_container_name }}:8080"]
+
+  - job_name: "speedtest"
+    scrape_interval: {{ prometheus_speedtest_collection_interval }}
+    scrape_timeout: 5m
+    static_configs:
+      - targets: ["{{ prometheus_speedtest_container_name }}:9798"]
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets: ["{{ prometheus_node_exporter_container_name }}:9100"]
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["{{ prometheus_cadvisor_container_name }}:8080"]

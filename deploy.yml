@@ -10,3 +10,4 @@
 
     - role: loki
     - role: grafana
+    - role: prometheus

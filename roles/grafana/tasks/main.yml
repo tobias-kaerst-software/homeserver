@@ -47,7 +47,7 @@
           homepage.name: "Grafana"
           homepage.icon: "grafana.svg"
           homepage.href: "https://{{ grafana_container_name }}.{{ hostname }}"
-          homepage.description: "Monitor your services."
+          homepage.description: "Visualize your metrics."
           homepage.widget.type: "grafana"
           homepage.widget.url: "https://{{ grafana_container_name }}.{{ hostname }}"
           homepage.widget.username: "{{ grafana_username }}"

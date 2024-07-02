@@ -1,0 +1,96 @@
+- name: Start prometheus
+  when: prometheus_enabled is true
+  block:
+    - name: Ensure prometheus config directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/prometheus/data"
+
+    - name: Template prometheus configuration
+      ansible.builtin.template:
+        src: "config.yml.j2"
+        dest: "{{ config_path }}/prometheus/config.yml"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start prometheus speedtest container
+      community.docker.docker_container:
+        name: "{{ prometheus_speedtest_container_name }}"
+        image: "{{ prometheus_speedtest_image_name }}:{{ prometheus_speedtest_image_version }}"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+
+    - name: Start prometheus node exporter container
+      community.docker.docker_container:
+        name: "{{ prometheus_node_exporter_container_name }}"
+        image: "{{ prometheus_node_exporter_image_name }}:{{ prometheus_node_exporter_image_version }}"
+        volumes:
+          - "/:/host:ro,rslave"
+        command:
+          - "--path.rootfs=/host"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+
+    - name: Start prometheus cadvisor container
+      community.docker.docker_container:
+        name: "{{ prometheus_cadvisor_container_name }}"
+        image: "{{ prometheus_cadvisor_image_name }}:{{ prometheus_cadvisor_image_version }}"
+        volumes:
+          - "/:/rootfs:ro"
+          - "/var/run:/var/run:ro"
+          - "/sys:/sys:ro"
+          - "/dev/disk/:/dev/disk:ro"
+          - "{{ docker_socket }}:/var/lib/docker:ro"
+        devices:
+          - "/dev/kmsg:/dev/kmsg"
+        privileged: true
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+
+    - name: Start prometheus container
+      community.docker.docker_container:
+        name: "{{ prometheus_container_name }}"
+        image: "{{ prometheus_image_name }}:{{ prometheus_image_version }}"
+        volumes:
+          - "{{ config_path }}/prometheus/data:/prometheus:rw"
+          - "{{ config_path }}/prometheus/config.yml:/etc/prometheus/config.yml:ro"
+          - "/etc/timezone:/etc/timezone:ro"
+        command: >
+          --config.file=/etc/prometheus/config.yml
+          --storage.tsdb.retention.size={{ prometheus_retention_size }}
+          --storage.tsdb.retention.time={{ prometheus_retention_time }}
+        labels:
+          traefik.http.routers.prometheus.entrypoints: websecure
+          traefik.http.routers.prometheus.rule: Host(`{{ prometheus_container_name }}.{{ hostname }}`)
+          homepage.group: "Metrics"
+          homepage.name: "Prometheus"
+          homepage.icon: "prometheus.svg"
+          homepage.href: "https://{{ prometheus_container_name }}.{{ hostname }}"
+          homepage.description: "Monitor system metrics."
+          homepage.widget.type: "prometheus"
+          homepage.widget.url: "https://{{ prometheus_container_name }}.{{ hostname }}"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "{{ docker_common_settings.user }}"
+
+- name: Stop prometheus
+  when: prometheus_enabled is false
+  block:
+    - name: Stop prometheus container
+      community.docker.docker_container:
+        name: "{{ prometheus_container_name }}"
+        state: absent

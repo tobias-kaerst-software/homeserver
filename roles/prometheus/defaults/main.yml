@@ -1,0 +1,24 @@
+prometheus_enabled: true
+
+prometheus_container_name: "prometheus"
+prometheus_image_name: "prom/prometheus"
+prometheus_image_version: "latest"
+
+prometheus_http_port: 9090
+
+prometheus_retention_time: 365d
+prometheus_retention_size: 30GB
+prometheus_collection_interval: 15s
+prometheus_speedtest_collection_interval: 1h
+
+prometheus_speedtest_container_name: "prometheus-speedtest"
+prometheus_speedtest_image_name: "ghcr.io/miguelndecarvalho/speedtest-exporter"
+prometheus_speedtest_image_version: "latest"
+
+prometheus_node_exporter_container_name: "prometheus-node-exporter"
+prometheus_node_exporter_image_name: "quay.io/prometheus/node-exporter"
+prometheus_node_exporter_image_version: "latest"
+
+prometheus_cadvisor_container_name: "prometheus-cadvisor"
+prometheus_cadvisor_image_name: "gcr.io/cadvisor/cadvisor"
+prometheus_cadvisor_image_version: "latest"

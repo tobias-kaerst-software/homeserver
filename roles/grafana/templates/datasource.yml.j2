@@ -11,3 +11,9 @@ datasources:
       httpHeaderName1: "X-Scope-OrgID"
     secureJsonData:
       httpHeaderValue1: "1"
+
+  - name: Prometheus
+    type: prometheus
+    uid: prometheus
+    access: proxy
+    url: http://{{ prometheus_container_name }}:{{ prometheus_http_port }}

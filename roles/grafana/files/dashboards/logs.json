@@ -307,7 +307,7 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -337,7 +337,7 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -372,7 +372,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Logs",
+  "title": "System Logs",
   "uid": "docker",
   "version": 1,
   "weekStart": ""
