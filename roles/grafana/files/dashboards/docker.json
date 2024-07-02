@@ -115,14 +115,14 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Unkown"
+              },
+              {
                 "id": "color",
                 "value": {
                   "mode": "fixed"
                 }
-              },
-              {
-                "id": "displayName",
-                "value": "Unkown"
               }
             ]
           }
@@ -161,7 +161,7 @@
             "uid": "loki"
           },
           "editorMode": "builder",
-          "expr": "count by(level) (rate({host=\"nas\"} [24h]))",
+          "expr": "count by(level) (rate({container_name=~\"$container\"} [24h]))",
           "queryType": "range",
           "refId": "A"
         }
@@ -256,7 +256,7 @@
             "uid": "loki"
           },
           "editorMode": "builder",
-          "expr": "count(rate({host=\"nas\"} [24h]))",
+          "expr": "count(rate({container_name=~\"$container\"} [24h]))",
           "queryType": "range",
           "refId": "A"
         }
@@ -307,7 +307,7 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -335,7 +335,7 @@
         "type": "query"
       },
       {
-        "allValue": ".+",
+        "allValue": ".*",
         "current": {
           "selected": true,
           "text": "All",

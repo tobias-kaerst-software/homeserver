@@ -17,6 +17,13 @@
         labels:
           traefik.http.routers.watchtower.entrypoints: websecure
           traefik.http.routers.watchtower.rule: Host(`{{ watchtower_container_name }}.{{ hostname }}`) && PathPrefix(`/v1/metrics`)
+          homepage.group: "Metrics"
+          homepage.name: "Watchtower"
+          homepage.icon: "watchtower.svg"
+          homepage.description: "Keep containers up to date."
+          homepage.widget.type: "watchtower"
+          homepage.widget.url: "https://{{ watchtower_container_name }}.{{ hostname }}"
+          homepage.widget.key: "{{ watchtower_token }}"
         networks: "{{ docker_common_settings.networks }}"
         log_driver: "{{ docker_common_settings.log_driver }}"
         log_options: "{{ docker_common_settings.log_options }}"

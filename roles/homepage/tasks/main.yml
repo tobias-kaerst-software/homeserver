@@ -38,6 +38,8 @@
           dest: "{{ config_path }}/homepage/services.yaml"
         - src: bookmarks.yml.j2
           dest: "{{ config_path }}/homepage/bookmarks.yaml"
+        - src: docker.yml.j2
+          dest: "{{ config_path }}/homepage/docker.yaml"
 
     - name: Start homepage container
       community.docker.docker_container:

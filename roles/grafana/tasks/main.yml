@@ -43,6 +43,15 @@
         labels:
           traefik.http.routers.grafana.entrypoints: websecure
           traefik.http.routers.grafana.rule: Host(`{{ grafana_container_name }}.{{ hostname }}`)
+          homepage.group: "Metrics"
+          homepage.name: "Grafana"
+          homepage.icon: "grafana.svg"
+          homepage.href: "https://{{ grafana_container_name }}.{{ hostname }}"
+          homepage.description: "Monitor your services."
+          homepage.widget.type: "grafana"
+          homepage.widget.url: "https://{{ grafana_container_name }}.{{ hostname }}"
+          homepage.widget.username: "{{ grafana_username }}"
+          homepage.widget.password: "{{ grafana_password }}"
         networks: "{{ docker_common_settings.networks }}"
         log_driver: "{{ docker_common_settings.log_driver }}"
         log_options: "{{ docker_common_settings.log_options }}"
