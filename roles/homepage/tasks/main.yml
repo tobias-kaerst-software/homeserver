@@ -50,6 +50,7 @@
           - "{{ config_path }}/homepage/images:/app/public/images"
           - "{{ docker_socket }}:/var/run/docker.sock:ro"
         labels:
+          traefik.enable: "true"
           traefik.http.routers.homepage.entrypoints: websecure
           traefik.http.routers.homepage.rule: Host(`{{ hostname }}`)
         networks: "{{ docker_common_settings.networks }}"

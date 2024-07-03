@@ -1,0 +1,86 @@
+theme: "dark"
+
+server:
+  address: "tcp://:9091"
+
+log:
+  level: "debug"
+
+totp:
+  issuer: "authelia.com"
+
+identity_validation:
+  reset_password:
+    jwt_secret: "{{ authelia_jwt_secret }}"
+
+authentication_backend:
+  file:
+    path: "/config/users_database.yml"
+    password:
+      algorithm: "argon2"
+      argon2:
+        variant: "argon2id"
+        iterations: 3
+        memory: 65536
+        parallelism: 4
+        key_length: 32
+        salt_length: 16
+
+access_control:
+  default_policy: "bypass"
+  rules:
+    - domain: "{{ traefik_container_name }}.{{ hostname }}"
+      policy: "one_factor"
+    - domain: "{{ prometheus_container_name }}.{{ hostname }}"
+      policy: "one_factor"
+
+identity_providers:
+  oidc:
+    hmac_secret: "{{ authelia_hmac_secret }}"
+    jwks:
+      - key_id: "default"
+        algorithm: "RS256"
+        use: "sig"
+        key: "{{ authelia_jwk_private_key }}"
+    clients:
+      - client_id: "{{ grafana_client_id }}"
+        client_name: "Grafana"
+        client_secret: "{{ grafana_client_secret_digest }}"
+        public: false
+        authorization_policy: "two_factor"
+        require_pkce: true
+        pkce_challenge_method: "S256"
+        redirect_uris:
+          - "https://{{ grafana_container_name }}.{{ hostname }}/login/generic_oauth"
+        scopes:
+          - "openid"
+          - "profile"
+          - "groups"
+          - "email"
+        userinfo_signed_response_alg: "none"
+        token_endpoint_auth_method: "client_secret_basic"
+
+session:
+  secret: "{{ authelia_session_secret }}"
+
+  cookies:
+    - name: "authelia_session"
+      domain: "{{ hostname }}"
+      authelia_url: "https://{{ authelia_container_name }}.{{ hostname }}"
+      expiration: "1 hour"
+      inactivity: "5 minutes"
+      default_redirection_url: "https://{{ hostname }}"
+
+regulation:
+  max_retries: 3
+  find_time: "2 minutes"
+  ban_time: "5 minutes"
+
+storage:
+  encryption_key: "{{ authelia_encryption_key }}"
+  local:
+    path: "/config/db.sqlite3"
+
+notifier:
+  smtp: 
+    {{ authelia_smtp_settings | to_nice_yaml(indent=2) | trim | indent(4) }}

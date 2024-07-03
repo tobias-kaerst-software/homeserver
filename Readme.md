@@ -7,6 +7,8 @@
 
 > 🚧 This project and it's documentation is still in development. Use at your own risk.
 
+- https://www.authelia.com/reference/guides/generating-secure-values/#generating-a-random-alphanumeric-string
+
 # ⚖ License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for more details.

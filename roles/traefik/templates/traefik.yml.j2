@@ -19,6 +19,41 @@ entryPoints:
           - main: "{{ hostname }}"
             sans: "*.{{ hostname }}"
 
+tls:
+  options:
+    modern:
+      minVersion: 'VersionTLS13'
+    intermediate:
+      minVersion: 'VersionTLS12'
+      cipherSuites:
+        - 'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256'
+        - 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
+        - 'TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384'
+        - 'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'
+        - 'TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305'
+        - 'TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305'
+
+http:
+  middlewares:
+    authelia:
+      forwardAuth:
+        address: 'http://{{ authelia_container_name }}:9091/api/authz/forward-auth'
+        trustForwardHeader: true
+        authResponseHeaders:
+          - 'Remote-User'
+          - 'Remote-Groups'
+          - 'Remote-Email'
+          - 'Remote-Name'
+    authelia-basic:
+      forwardAuth:
+        address: 'https://{{ authelia_container_name }}:9091/api/verify?auth=basic'
+        trustForwardHeader: true
+        authResponseHeaders:
+          - 'Remote-User'
+          - 'Remote-Groups'
+          - 'Remote-Email'
+          - 'Remote-Name'
+
 certificatesResolvers:
   letsencrypt:
     acme:
@@ -32,9 +67,11 @@ certificatesResolvers:
 
 api:
   dashboard: true
+  insecure: true
 
 providers:
-  docker: {}
+  docker: 
+    exposedByDefault: false
   file:
     directory: /etc/traefik
     watch: true

@@ -11,3 +11,5 @@
     - role: loki
     - role: grafana
     - role: prometheus
+
+    - role: authelia

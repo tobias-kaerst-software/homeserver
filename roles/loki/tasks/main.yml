@@ -34,9 +34,6 @@
           - "{{ config_path }}/loki/data:/etc/loki"
           - "{{ config_path }}/loki/settings/loki-config.yml:/mnt/config/loki-config.yml"
         command: -config.file=/mnt/config/loki-config.yml
-        labels:
-          traefik.http.routers.loki.entrypoints: websecure
-          traefik.http.routers.loki.rule: Host(`{{ loki_container_name }}.{{ hostname }}`)
         networks: "{{ docker_common_settings.networks }}"
         log_driver: "{{ docker_common_settings.log_driver }}"
         log_options: "{{ docker_common_settings.log_options }}"

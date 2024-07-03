@@ -72,15 +72,17 @@
           --storage.tsdb.retention.size={{ prometheus_retention_size }}
           --storage.tsdb.retention.time={{ prometheus_retention_time }}
         labels:
+          traefik.enable: "true"
           traefik.http.routers.prometheus.entrypoints: websecure
           traefik.http.routers.prometheus.rule: Host(`{{ prometheus_container_name }}.{{ hostname }}`)
+          traefik.http.routers.prometheus.middlewares: authelia@file
           homepage.group: "Metrics"
           homepage.name: "Prometheus"
           homepage.icon: "prometheus.svg"
           homepage.href: "https://{{ prometheus_container_name }}.{{ hostname }}"
           homepage.description: "Monitor system metrics."
           homepage.widget.type: "prometheus"
-          homepage.widget.url: "https://{{ prometheus_container_name }}.{{ hostname }}"
+          homepage.widget.url: "http://{{ prometheus_container_name }}:9090"
         networks: "{{ docker_common_settings.networks }}"
         log_driver: "{{ docker_common_settings.log_driver }}"
         log_options: "{{ docker_common_settings.log_options }}"
@@ -90,6 +92,21 @@
 - name: Stop prometheus
   when: prometheus_enabled is false
   block:
+    - name: Stop prometheus speedtest container
+      community.docker.docker_container:
+        name: "{{ prometheus_speedtest_container_name }}"
+        state: absent
+
+    - name: Stop prometheus node exporter container
+      community.docker.docker_container:
+        name: "{{ prometheus_node_exporter_container_name }}"
+        state: absent
+
+    - name: Stop prometheus cadvisor container
+      community.docker.docker_container:
+        name: "{{ prometheus_cadvisor_container_name }}"
+        state: absent
+
     - name: Stop prometheus container
       community.docker.docker_container:
         name: "{{ prometheus_container_name }}"

@@ -1,0 +1,2 @@
+users: 
+    {{ authelia_users  | to_nice_yaml(indent=2) | trim | indent(4) }}

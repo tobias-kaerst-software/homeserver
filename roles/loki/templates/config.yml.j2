@@ -38,13 +38,12 @@ storage_config:
     active_index_directory: /etc/loki/tsdb-index
     cache_location: /etc/loki/tsdb-cache
     cache_ttl: 24h
-    shared_store: filesystem
   filesystem:
     directory: /etc/loki/chunks
 
 compactor:
   working_directory: /etc/loki/tsdb-compactor
-  shared_store: filesystem
+  compaction_interval: 5m
 
 query_scheduler:
   max_outstanding_requests_per_tenant: 32768

@@ -1,0 +1,5 @@
+authelia_enabled: true
+
+authelia_container_name: "authelia"
+authelia_image_name: "docker.io/authelia/authelia"
+authelia_image_version: "latest"

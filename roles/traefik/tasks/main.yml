@@ -31,16 +31,18 @@
           NAMECHEAP_API_USER: "{{ acme_user }}"
           NAMECHEAP_API_KEY: "{{ acme_api_key }}"
         labels:
+          traefik.enable: "true"
           traefik.http.routers.traefik.entrypoints: websecure
           traefik.http.routers.traefik.rule: Host(`{{ traefik_container_name }}.{{ hostname }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
           traefik.http.routers.traefik.service: api@internal
+          traefik.http.routers.traefik.middlewares: authelia@file
           homepage.group: "Management"
           homepage.name: "Traefik"
           homepage.icon: "traefik.svg"
-          homepage.href: "https://{{ traefik_container_name }}.{{ hostname }}"
+          homepage.href: "https://{{ traefik_container_name }}.{{ hostname }}/dashboard/"
           homepage.description: "Reverse proxy and load balancer."
           homepage.widget.type: "traefik"
-          homepage.widget.url: "https://{{ traefik_container_name }}.{{ hostname }}"
+          homepage.widget.url: "http://{{ traefik_container_name }}:8080"
         networks: "{{ docker_common_settings.networks }}"
         log_driver: "{{ docker_common_settings.log_driver }}"
         log_options: "{{ docker_common_settings.log_options }}"
