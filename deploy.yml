@@ -11,5 +11,6 @@
     - role: loki
     - role: grafana
     - role: prometheus
+    - role: uptime
 
     - role: authelia

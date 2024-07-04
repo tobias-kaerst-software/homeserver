@@ -15,7 +15,7 @@
           WATCHTOWER_CLEANUP: "true"
           WATCHTOWER_REMOVE_VOLUMES: "true"
         labels:
-          homepage.group: "Metrics"
+          homepage.group: "Management"
           homepage.name: "Watchtower"
           homepage.icon: "watchtower.svg"
           homepage.description: "Keep containers up to date."

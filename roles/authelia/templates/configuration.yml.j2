@@ -33,6 +33,8 @@ access_control:
       policy: "one_factor"
     - domain: "{{ prometheus_container_name }}.{{ hostname }}"
       policy: "one_factor"
+    - domain: "{{ uptime_container_name }}.{{ hostname }}"
+      policy: "one_factor"
 
 identity_providers:
   oidc:

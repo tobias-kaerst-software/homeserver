@@ -1,0 +1,43 @@
+- name: Start uptime
+  when: uptime_enabled is true
+  block:
+    - name: Ensure uptime config directory
+      ansible.builtin.file:
+        path: "{{ config_path }}/uptime"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start uptime container
+      community.docker.docker_container:
+        name: "{{ uptime_container_name }}"
+        image: "{{ uptime_image_name }}:{{ uptime_image_version }}"
+        volumes:
+          - "{{ config_path }}/uptime:/app/data"
+          - "{{ docker_socket }}:/var/run/docker.sock:ro"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.uptime.entrypoints: websecure
+          traefik.http.routers.uptime.rule: Host(`{{ uptime_container_name }}.{{ hostname }}`)
+          traefik.http.routers.uptime.middlewares: authelia@file
+          homepage.group: "Metrics"
+          homepage.name: "Uptime Kuma"
+          homepage.icon: "uptime-kuma.svg"
+          homepage.href: "https://{{ uptime_container_name }}.{{ hostname }}/dashboard"
+          homepage.description: "Service uptime monitoring."
+          homepage.widget.type: "uptimekuma"
+          homepage.widget.url: "http://{{ uptime_container_name }}:3001"
+          homepage.widget.slug: "{{ uptime_default_slug }}"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+
+- name: Stop uptime
+  when: uptime_enabled is false
+  block:
+    - name: Stop uptime container
+      community.docker.docker_container:
+        name: "{{ uptime_container_name }}"
+        state: absent

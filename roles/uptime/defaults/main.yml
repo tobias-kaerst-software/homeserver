@@ -1,0 +1,7 @@
+uptime_enabled: true
+
+uptime_container_name: "uptime"
+uptime_image_name: "louislam/uptime-kuma"
+uptime_image_version: "latest"
+
+uptime_default_slug: "homeserver"
