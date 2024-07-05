@@ -14,3 +14,7 @@
     - role: uptime
 
     - role: authelia
+
+    - role: jellyfin
+    - role: jellyseerr
+    - role: audiobookshelf

@@ -1,0 +1,50 @@
+- name: Start audiobookshelf
+  when: audiobookshelf_enabled is true
+  block:
+    - name: Ensure audiobookshelf config / data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/audiobookshelf/config"
+        - "{{ config_path }}/audiobookshelf/metadata"
+
+    - name: Start audiobookshelf container
+      community.docker.docker_container:
+        name: "{{ audiobookshelf_container_name }}"
+        image: "{{ audiobookshelf_image_name }}:{{ audiobookshelf_image_version }}"
+        volumes:
+          - "{{ config_path }}/audiobookshelf/config:/config"
+          - "{{ config_path }}/audiobookshelf/metadata:/metadata"
+          - "{{ data_path }}/media:/media"
+        env:
+          PUID: "{{ docker_user_id }}"
+          PGID: "{{ docker_user_id }}"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.audiobookshelf.entrypoints: "websecure"
+          traefik.http.routers.audiobookshelf.rule: "Host(`{{ audiobookshelf_container_name }}.{{ hostname }}`)"
+          homepage.group: "Media"
+          homepage.name: "Audio Bookshelf"
+          homepage.icon: "audiobookshelf.svg"
+          homepage.href: "https://{{ audiobookshelf_container_name }}.{{ hostname }}"
+          homepage.description: "Listen to Podcasts or Audiobooks."
+          homepage.widget.type: "audiobookshelf"
+          homepage.widget.url: "http://{{ audiobookshelf_container_name }}:80"
+          homepage.widget.key: "{{ audiobookshelf_api_key }}"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "{{ docker_common_settings.user }}"
+
+- name: Stop audiobookshelf
+  when: audiobookshelf_enabled is false
+  block:
+    - name: Stop audiobookshelf container
+      community.docker.docker_container:
+        name: "{{ audiobookshelf_container_name }}"
+        state: absent

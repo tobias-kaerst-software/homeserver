@@ -1,0 +1,5 @@
+audiobookshelf_enabled: true
+
+audiobookshelf_container_name: "audiobookshelf"
+audiobookshelf_image_name: "ghcr.io/advplyr/audiobookshelf"
+audiobookshelf_image_version: "latest"

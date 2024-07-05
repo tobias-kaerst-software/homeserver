@@ -1,0 +1,5 @@
+jellyseerr_enabled: true
+
+jellyseerr_container_name: "jellyseerr"
+jellyseerr_image_name: "fallenbagel/jellyseerr"
+jellyseerr_image_version: "latest"

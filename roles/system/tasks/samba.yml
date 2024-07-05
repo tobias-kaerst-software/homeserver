@@ -1,0 +1,25 @@
+- name: Attempt samba installation
+  ansible.builtin.apt:
+    update_cache: true
+    state: present
+    pkg: samba
+
+- name: Add user to smbpasswd
+  ansible.builtin.expect:
+    command: "smbpasswd -a {{ ansible_user }}"
+    responses:
+      "New SMB password:": "{{ smb_password }}"
+      "Retype new SMB password:": "{{ smb_password }}"
+
+- name: Template the smb config file
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Restart smb service
+  ansible.builtin.service:
+    name: smbd
+    state: restarted

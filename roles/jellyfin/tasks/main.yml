@@ -1,0 +1,56 @@
+- name: Start jellyfin
+  when: jellyfin_enabled is true
+  block:
+    - name: Ensure jellyfin config / data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/jellyfin/cache"
+        - "{{ config_path }}/jellyfin/config"
+
+    - name: Start jellyfin container
+      community.docker.docker_container:
+        name: "{{ jellyfin_container_name }}"
+        image: "{{ jellyfin_image_name }}:{{ jellyfin_image_version }}"
+        ports:
+          - 7359:7359/udp
+          - 1900:1900/udp
+        volumes:
+          - "{{ config_path }}/jellyfin/config:/config"
+          - "{{ config_path }}/jellyfin/cache:/cache"
+          - "{{ data_path }}/media:/media"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ docker_user_id }}"
+          PGID: "{{ docker_user_id }}"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.jellyfin.entrypoints: "websecure"
+          traefik.http.routers.jellyfin.rule: "Host(`{{ jellyfin_container_name }}.{{ hostname }}`)"
+          traefik.http.services.jellyfin.loadbalancer.server.port: "8096"
+          homepage.group: "Media"
+          homepage.name: "Jellyfin"
+          homepage.icon: "jellyfin.svg"
+          homepage.href: "https://{{ jellyfin_container_name }}.{{ hostname }}"
+          homepage.description: "Watch movies and TV shows."
+          homepage.widget.type: "jellyfin"
+          homepage.widget.url: "http://{{ jellyfin_container_name }}:8096"
+          homepage.widget.key: "{{ jellyfin_api_key }}"
+          homepage.widget.enableNowPlaying: "true"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "{{ docker_common_settings.user }}"
+
+- name: Stop jellyfin
+  when: jellyfin_enabled is false
+  block:
+    - name: Stop jellyfin container
+      community.docker.docker_container:
+        name: "{{ jellyfin_container_name }}"
+        state: absent
