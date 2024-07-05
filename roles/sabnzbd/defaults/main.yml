@@ -1,0 +1,5 @@
+sabnzbd_enabled: true
+
+sabnzbd_container_name: "sabnzbd"
+sabnzbd_image_name: "lscr.io/linuxserver/sabnzbd"
+sabnzbd_image_version: "latest"

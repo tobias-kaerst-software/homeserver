@@ -1,0 +1,48 @@
+- name: Start sonarr
+  when: sonarr_enabled is true
+  block:
+    - name: Ensure sonarr config / data directories
+      ansible.builtin.file:
+        path: "{{ config_path }}/sonarr"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start sonarr container
+      community.docker.docker_container:
+        name: "{{ sonarr_container_name }}"
+        image: "{{ sonarr_image_name }}:{{ sonarr_image_version }}"
+        volumes:
+          - "{{ config_path }}/sonarr:/config"
+          - "{{ data_path }}:/data"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ docker_user_id }}"
+          PGID: "{{ docker_user_id }}"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.sonarr.entrypoints: "websecure"
+          traefik.http.routers.sonarr.rule: "Host(`{{ sonarr_container_name }}.{{ hostname }}`)"
+          traefik.http.routers.sonarr.middlewares: authelia@file
+          homepage.group: "Media Tools"
+          homepage.name: "Sonarr"
+          homepage.icon: "sonarr.svg"
+          homepage.href: "https://{{ sonarr_container_name }}.{{ hostname }}"
+          homepage.description: "Download and manage TV shows."
+          homepage.widget.type: "sonarr"
+          homepage.widget.url: "http://{{ sonarr_container_name }}:8989"
+          homepage.widget.key: "{{ sonarr_api_key }}"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "0"
+
+- name: Stop sonarr
+  when: sonarr_enabled is false
+  block:
+    - name: Stop sonarr container
+      community.docker.docker_container:
+        name: "{{ sonarr_container_name }}"
+        state: absent

@@ -1,0 +1,52 @@
+- name: Start sabnzbd
+  when: sabnzbd_enabled is true
+  block:
+    - name: Ensure sabnzbd config / data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/sabnzbd"
+        - "{{ data_path }}/usenet/complete"
+        - "{{ data_path }}/usenet/incomplete"
+
+    - name: Start sabnzbd container
+      community.docker.docker_container:
+        name: "{{ sabnzbd_container_name }}"
+        image: "{{ sabnzbd_image_name }}:{{ sabnzbd_image_version }}"
+        volumes:
+          - "{{ config_path }}/sabnzbd:/config:rw"
+          - "{{ data_path }}/usenet:/data/usenet:rw"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ docker_user_id }}"
+          PGID: "{{ docker_user_id }}"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.sabnzbd.entrypoints: "websecure"
+          traefik.http.routers.sabnzbd.rule: "Host(`{{ sabnzbd_container_name }}.{{ hostname }}`)"
+          traefik.http.routers.sabnzbd.middlewares: authelia@file
+          homepage.group: "Media Tools"
+          homepage.name: "SABnzbd"
+          homepage.icon: "sabnzbd.svg"
+          homepage.href: "https://{{ sabnzbd_container_name }}.{{ hostname }}"
+          homepage.description: "Usenet Downloader."
+          homepage.widget.type: "sabnzbd"
+          homepage.widget.url: "http://{{ sabnzbd_container_name }}:8080"
+          homepage.widget.key: "{{ sabnzbd_api_key }}"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "0"
+
+- name: Stop sabnzbd
+  when: sabnzbd_enabled is false
+  block:
+    - name: Stop sabnzbd container
+      community.docker.docker_container:
+        name: "{{ sabnzbd_container_name }}"
+        state: absent

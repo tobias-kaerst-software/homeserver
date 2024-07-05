@@ -35,6 +35,10 @@ access_control:
       policy: "one_factor"
     - domain: "{{ uptime_container_name }}.{{ hostname }}"
       policy: "one_factor"
+    - domain: "{{ sabnzbd_container_name }}.{{ hostname }}"
+      policy: "two_factor"
+    - domain: "{{ sonarr_container_name }}.{{ hostname }}"
+      policy: "two_factor"
 
 identity_providers:
   oidc:
