@@ -28,8 +28,8 @@
     validate: "sshd -T -f %s"
     mode: "0644"
   with_items:
-    - regexp: "^#?PasswordAuthentication"
-      line: "PasswordAuthentication no"
+    # - regexp: "^#?PasswordAuthentication"
+    #   line: "PasswordAuthentication no"
     - regexp: "^#?PermitRootLogin"
       line: "PermitRootLogin no"
     - regexp: "^#?Port"

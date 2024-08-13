@@ -1,0 +1,48 @@
+- name: Start radarr
+  when: radarr_enabled is true
+  block:
+    - name: Ensure radarr config / data directories
+      ansible.builtin.file:
+        path: "{{ config_path }}/radarr"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start radarr container
+      community.docker.docker_container:
+        name: "{{ radarr_container_name }}"
+        image: "{{ radarr_image_name }}:{{ radarr_image_version }}"
+        volumes:
+          - "{{ config_path }}/radarr:/config"
+          - "{{ data_path }}:/data"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ docker_user_id }}"
+          PGID: "{{ docker_user_id }}"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.radarr.entrypoints: "websecure"
+          traefik.http.routers.radarr.rule: "Host(`{{ radarr_container_name }}.{{ hostname }}`)"
+          # traefik.http.routers.radarr.middlewares: authelia@file
+          homepage.group: "Media Tools"
+          homepage.name: "Radarr"
+          homepage.icon: "radarr.svg"
+          homepage.href: "https://{{ radarr_container_name }}.{{ hostname }}"
+          homepage.description: "Download and manage movies."
+          homepage.widget.type: "radarr"
+          homepage.widget.url: "http://{{ radarr_container_name }}:7878"
+          homepage.widget.key: "{{ radarr_api_key }}"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "0"
+
+- name: Stop radarr
+  when: radarr_enabled is false
+  block:
+    - name: Stop radarr container
+      community.docker.docker_container:
+        name: "{{ radarr_container_name }}"
+        state: absent
