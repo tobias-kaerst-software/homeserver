@@ -1,0 +1,5 @@
+redis_enabled: true
+
+redis_container_name: "redis"
+redis_image_name: "redis"
+redis_image_version: "7"

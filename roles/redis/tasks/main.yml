@@ -1,0 +1,30 @@
+- name: Start redis
+  when: redis_enabled is true
+  block:
+    - name: Ensure redis config / data directories
+      ansible.builtin.file:
+        path: "{{ config_path }}/redis"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start redis container
+      community.docker.docker_container:
+        name: "{{ redis_container_name }}"
+        image: "{{ redis_image_name }}:{{ redis_image_version }}"
+        volumes:
+          - "{{ config_path }}/redis:/data"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "0"
+
+- name: Stop redis
+  when: redis_enabled is false
+  block:
+    - name: Stop redis container
+      community.docker.docker_container:
+        name: "{{ redis_container_name }}"
+        state: absent

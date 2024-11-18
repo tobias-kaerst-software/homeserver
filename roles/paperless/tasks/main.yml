@@ -1,0 +1,59 @@
+- name: Start paperless
+  when: paperless_enabled is true
+  block:
+    - name: Ensure paperless config / data directories
+      ansible.builtin.file:
+        path: "{{ config_path }}/paperless"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start paperless container
+      community.docker.docker_container:
+        name: "{{ paperless_container_name }}"
+        image: "{{ paperless_image_name }}:{{ paperless_image_version }}"
+        volumes:
+          - "{{ config_path }}/paperless:/usr/src/paperless/data"
+          - "{{ data_path }}/files/documents/paperless/media:/usr/src/paperless/media"
+          - "{{ data_path }}/files/documents/paperless/export:/usr/src/paperless/export"
+          - "{{ data_path }}/files/documents/paperless/consume:/usr/src/paperless/consume"
+        env:
+          PUID: "{{ docker_user_id }}"
+          PGID: "{{ docker_user_id }}"
+          PAPERLESS_REDIS: "redis://{{ redis_container_name }}:6379"
+          PAPERLESS_FILENAME_FORMAT: "{owner_username}/{created_year}/{correspondent}/{title}"
+          PAPERLESS_ADMIN_USER: "{{ paperless_admin_user }}"
+          PAPERLESS_ADMIN_PASSWORD: "{{ paperless_admin_password }}"
+          PAPERLESS_URL: "https://{{ paperless_container_name }}.{{ hostname }}"
+          PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
+          PAPERLESS_TIME_ZONE: "{{ timezone }}"
+          PAPERLESS_OCR_LANGUAGE: "{{ paperless_ocr_language }}"
+          PAPERLESS_WEBSERVER_WORKERS: "1"
+          PAPERLESS_TASK_WORKERS: "1"
+          PAPERLESS_THREADS_PER_WORKER: "1"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.paperless.entrypoints: "websecure"
+          traefik.http.routers.paperless.rule: "Host(`{{ paperless_container_name }}.{{ hostname }}`)"
+          homepage.group: "Management"
+          homepage.name: "Paperless"
+          homepage.icon: "paperless-ngx.svg"
+          homepage.href: "https://{{ paperless_container_name }}.{{ hostname }}"
+          homepage.description: "Scan, index and archive all your physical documents."
+          homepage.widget.type: "paperlessngx"
+          homepage.widget.url: "http://{{ paperless_container_name }}:8000"
+          homepage.widget.key: "{{ paperless_user_key }}"
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "0"
+
+- name: Stop paperless
+  when: paperless_enabled is false
+  block:
+    - name: Stop paperless container
+      community.docker.docker_container:
+        name: "{{ paperless_container_name }}"
+        state: absent

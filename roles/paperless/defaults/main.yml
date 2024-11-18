@@ -1,0 +1,7 @@
+paperless_enabled: true
+
+paperless_container_name: "paperless"
+paperless_image_name: "ghcr.io/paperless-ngx/paperless-ngx"
+paperless_image_version: "latest"
+
+paperless_ocr_language: "deu+eng"

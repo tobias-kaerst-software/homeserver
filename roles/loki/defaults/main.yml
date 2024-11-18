@@ -7,9 +7,11 @@ loki_image_version: "latest"
 loki_hostname: "loki"
 loki_http_port: "3100"
 
+loki_logger_network: "loki_network"
+
 loki_logging_driver: "loki"
 loki_logging_options:
-  loki-url: "https://{{ loki_container_name }}.{{ hostname }}/loki/api/v1/push"
+  loki-url: "http://10.6.0.2:{{ loki_http_port }}/loki/api/v1/push"
   mode: non-blocking
   max-buffer-size: 4m
   loki-retries: "3"

@@ -1,0 +1,41 @@
+minecraft_enabled: false
+
+minecraft_container_name: "minecraft"
+minecraft_image_name: "itzg/minecraft-server"
+minecraft_image_version: "latest"
+
+minecraft_environment_variables:
+  EULA: "TRUE"
+
+  MOD_PLATFORM: "AUTO_CURSEFORGE"
+  CF_API_KEY: "$2a$10$yHMpbjcXHN52IcAhbL9bl.KtkbmTmJOlEDHQL8nhrVF0g/8IKY2x2"
+  JVM_XX_OPTS: >
+    -XX:+UseG1GC
+    -XX:+ParallelRefProcEnabled
+    -XX:MaxGCPauseMillis=200
+    -XX:+UnlockExperimentalVMOptions
+    -XX:+DisableExplicitGC
+    -XX:+AlwaysPreTouch
+    -XX:G1NewSizePercent=30
+    -XX:G1MaxNewSizePercent=40
+    -XX:G1HeapRegionSize=8M
+    -XX:G1ReservePercent=20
+    -XX:G1HeapWastePercent=5
+    -XX:G1MixedGCCountTarget=4
+    -XX:InitiatingHeapOccupancyPercent=15
+    -XX:G1MixedGCLiveThresholdPercent=90
+    -XX:G1RSetUpdatingPauseTimePercent=5
+    -XX:SurvivorRatio=32
+    -XX:+PerfDisableSharedMem
+    -XX:MaxTenuringThreshold=1
+
+  CF_SLUG: "project-architect-2"
+  CF_FILE_ID: "5615777"
+  MOTD: "\u00a7c\u00a7kAA\u00a7c Project Architect 2 \u00a7c\u00a7kAA"
+  ICON: "https://media.forgecdn.net/avatars/thumbnails/1042/141/256/256/638568756937008342.png"
+
+  DIFFICULTY: "hard"
+  MAX_PLAYERS: "4"
+  SPAWN_PROTECTION: "0"
+  ALLOW_FLIGHT: "true"
+  MEMORY: "8G"

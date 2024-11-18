@@ -26,6 +26,13 @@
         group: "{{ ansible_user }}"
         mode: "0700"
 
+    - name: Create the loki network
+      community.general.docker_network:
+        name: "{{ loki_logger_network }}"
+        ipam_config:
+          - subnet: 10.6.0.0/16
+            gateway: 10.6.0.1
+
     - name: Start loki container
       community.docker.docker_container:
         name: "{{ loki_container_name }}"
@@ -34,7 +41,10 @@
           - "{{ config_path }}/loki/data:/etc/loki"
           - "{{ config_path }}/loki/settings/loki-config.yml:/mnt/config/loki-config.yml"
         command: -config.file=/mnt/config/loki-config.yml
-        networks: "{{ docker_common_settings.networks }}"
+        networks:
+          - name: "{{ docker_network_name }}"
+          - name: "{{ loki_logger_network }}"
+            ipv4_address: 10.6.0.2
         log_driver: "{{ docker_common_settings.log_driver }}"
         log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
