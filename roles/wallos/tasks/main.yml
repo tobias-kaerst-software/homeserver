@@ -19,6 +19,10 @@
         volumes:
           - "{{ config_path }}/wallos/data:/var/www/html/db"
           - "{{ config_path }}/wallos/logos:/var/www/html/images/uploads/logos"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ docker_user_id }}"
+          PGID: "{{ docker_user_id }}"
         labels:
           traefik.enable: "true"
           traefik.http.routers.wallos.entrypoints: websecure
