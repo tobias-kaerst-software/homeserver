@@ -1,0 +1,30 @@
+- name: Start glances
+  when: glances_enabled is true
+  block:
+    - name: Start glances container
+      community.docker.docker_container:
+        name: "{{ glances_container_name }}"
+        image: "{{ glances_image_name }}:{{ glances_image_version }}"
+        volumes:
+          - "{{ docker_socket }}:/var/run/docker.sock:ro"
+          - "{{ data_path }}:{{ data_path }}:ro"
+        env:
+          GLANCES_OPT: "-w"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.glances.entrypoints: websecure
+          traefik.http.routers.glances.rule: Host(`{{ glances_container_name }}.{{ hostname }}`)
+        pid_mode: host
+        # network_mode: host
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+
+- name: Stop glances
+  when: glances_enabled is false
+  block:
+    - name: Stop glances container
+      community.docker.docker_container:
+        name: "{{ glances_container_name }}"
+        state: absent

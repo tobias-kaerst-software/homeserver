@@ -8,34 +8,37 @@ providers:
 favicon: /images/favicon.ico
 background:
   image: /images/background.webp
-  saturate: 50
-  brightness: 75
-  opacity: 50
 
 iconStyle: theme
 theme: dark
-color: gray
+color: slate
 
 hideVersion: true
 headerStyle: clean
 
-cardBlur: sm
+cardBlur: md
 useEqualHeights: true
 
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: true
+  showSearchSuggestions: true
+  hideVisitURL: true
+
 layout:
-  Management:
-    icon: si-openvpn
+  Glances:
     style: row
     columns: 4
-  Media:
-    icon: si-opentofu
+    header: false
+  Management:
     style: row
     columns: 3
-  Metrics:
-    icon: si-graphql
-    style: column
-    rows: 2
-  "Media Tools":
-    icon: si-mediafire
-    style: column
-    rows: 2
+    header: false
+  Media:
+    style: row
+    columns: 3
+    header: false
+  System:
+    style: row
+    columns: 3
+    header: false

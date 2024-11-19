@@ -21,7 +21,7 @@
           traefik.http.routers.uptime.entrypoints: websecure
           traefik.http.routers.uptime.rule: Host(`{{ uptime_container_name }}.{{ hostname }}`)
           traefik.http.routers.uptime.middlewares: authelia@file
-          homepage.group: "Metrics"
+          homepage.group: "System"
           homepage.name: "Uptime Kuma"
           homepage.icon: "uptime-kuma.svg"
           homepage.href: "https://{{ uptime_container_name }}.{{ hostname }}/dashboard"

@@ -1,0 +1,5 @@
+glances_enabled: true
+
+glances_container_name: "glances"
+glances_image_name: "nicolargo/glances"
+glances_image_version: "latest"

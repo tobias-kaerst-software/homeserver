@@ -25,7 +25,7 @@
           traefik.http.routers.radarr.entrypoints: "websecure"
           traefik.http.routers.radarr.rule: "Host(`{{ radarr_container_name }}.{{ hostname }}`)"
           # traefik.http.routers.radarr.middlewares: authelia@file
-          homepage.group: "Media Tools"
+          homepage.group: "Media"
           homepage.name: "Radarr"
           homepage.icon: "radarr.svg"
           homepage.href: "https://{{ radarr_container_name }}.{{ hostname }}"

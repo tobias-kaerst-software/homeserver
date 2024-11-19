@@ -29,7 +29,7 @@
           traefik.http.routers.sabnzbd.entrypoints: "websecure"
           traefik.http.routers.sabnzbd.rule: "Host(`{{ sabnzbd_container_name }}.{{ hostname }}`)"
           traefik.http.routers.sabnzbd.middlewares: authelia@file
-          homepage.group: "Media Tools"
+          homepage.group: "Media"
           homepage.name: "SABnzbd"
           homepage.icon: "sabnzbd.svg"
           homepage.href: "https://{{ sabnzbd_container_name }}.{{ hostname }}"

@@ -1,0 +1,5 @@
+wallos_enabled: true
+
+wallos_container_name: "wallos"
+wallos_image_name: "bellamy/wallos"
+wallos_image_version: "latest"

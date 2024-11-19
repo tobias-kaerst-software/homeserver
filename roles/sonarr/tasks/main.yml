@@ -25,7 +25,7 @@
           traefik.http.routers.sonarr.entrypoints: "websecure"
           traefik.http.routers.sonarr.rule: "Host(`{{ sonarr_container_name }}.{{ hostname }}`)"
           # traefik.http.routers.sonarr.middlewares: authelia@file
-          homepage.group: "Media Tools"
+          homepage.group: "Media"
           homepage.name: "Sonarr"
           homepage.icon: "sonarr.svg"
           homepage.href: "https://{{ sonarr_container_name }}.{{ hostname }}"

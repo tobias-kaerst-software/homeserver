@@ -1,4 +1,4 @@
-- Management:
+- System:
     - Fritzbox:
         icon:  avmfritzbox.svg
         href: "http://{{ router_host }}"
@@ -8,3 +8,32 @@
           type: fritzbox
           url: "http://{{ router_host }}"
 
+- Glances:
+    - CPU:
+        widget:
+          type: glances
+          url: "https://{{ glances_container_name }}.{{ hostname }}"
+          metric: cpu
+          chart: false
+          version: 4
+    - Memory:
+        widget:
+          type: glances
+          url: "https://{{ glances_container_name }}.{{ hostname }}"
+          metric: memory
+          chart: false
+          version: 4
+    - Filesystem:
+        widget:
+          type: glances
+          url: "https://{{ glances_container_name }}.{{ hostname }}"
+          metric: fs:{{ data_path }}
+          chart: false
+          version: 4
+    - Disk:
+        widget:
+          type: glances
+          url: "https://{{ glances_container_name }}.{{ hostname }}"
+          metric: disk:{{ data_disk_device }}
+          chart: false
+          version: 4

@@ -36,7 +36,7 @@
           traefik.http.routers.traefik.rule: Host(`{{ traefik_container_name }}.{{ hostname }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
           traefik.http.routers.traefik.service: api@internal
           traefik.http.routers.traefik.middlewares: authelia@file
-          homepage.group: "Management"
+          homepage.group: "System"
           homepage.name: "Traefik"
           homepage.icon: "traefik.svg"
           homepage.href: "https://{{ traefik_container_name }}.{{ hostname }}/dashboard/"

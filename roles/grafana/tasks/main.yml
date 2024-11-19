@@ -65,7 +65,7 @@
           traefik.enable: "true"
           traefik.http.routers.grafana.entrypoints: websecure
           traefik.http.routers.grafana.rule: Host(`{{ grafana_container_name }}.{{ hostname }}`)
-          homepage.group: "Metrics"
+          homepage.group: "System"
           homepage.name: "Grafana"
           homepage.icon: "grafana.svg"
           homepage.href: "https://{{ grafana_container_name }}.{{ hostname }}"

@@ -76,7 +76,7 @@
           traefik.http.routers.prometheus.entrypoints: websecure
           traefik.http.routers.prometheus.rule: Host(`{{ prometheus_container_name }}.{{ hostname }}`)
           traefik.http.routers.prometheus.middlewares: authelia@file
-          homepage.group: "Metrics"
+          homepage.group: "System"
           homepage.name: "Prometheus"
           homepage.icon: "prometheus.svg"
           homepage.href: "https://{{ prometheus_container_name }}.{{ hostname }}"

@@ -1,0 +1,43 @@
+- name: Start wallos
+  when: wallos_enabled is true
+  block:
+    - name: Ensure wallos config directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/wallos/data"
+        - "{{ config_path }}/wallos/logos"
+
+    - name: Start wallos container
+      community.docker.docker_container:
+        name: "{{ wallos_container_name }}"
+        image: "{{ wallos_image_name }}:{{ wallos_image_version }}"
+        volumes:
+          - "{{ config_path }}/wallos/data:/var/www/html/db"
+          - "{{ config_path }}/wallos/logos:/var/www/html/images/uploads/logos"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.wallos.entrypoints: websecure
+          traefik.http.routers.wallos.rule: Host(`{{ wallos_container_name }}.{{ hostname }}`)
+          homepage.group: "Management"
+          homepage.name: "Wallos"
+          homepage.icon: "wallos.png"
+          homepage.href: "https://{{ wallos_container_name }}.{{ hostname }}"
+          homepage.description: "Wallos enables managing your finances."
+        networks: "{{ docker_common_settings.networks }}"
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "0"
+
+- name: Stop wallos
+  when: wallos_enabled is false
+  block:
+    - name: Stop wallos container
+      community.docker.docker_container:
+        name: "{{ wallos_container_name }}"
+        state: absent
