@@ -1,0 +1,23 @@
+- name: Install and configure rclone
+  ansible.builtin.include_role:
+    name: stefangweichinger.ansible_rclone
+  vars:
+    rclone_configs:
+      - name: "{{ rclone_remote }}"
+        properties:
+          type: protondrive
+          username: "{{ proton_username }}"
+          client_secret: "{{ proton_encrypted_password}}"
+
+- name: Template sync script to bin
+  ansible.builtin.template:
+    src: rclone-backup.sh.j2
+    dest: /usr/local/bin/rclone-backup.sh
+    mode: 0755
+
+- name: Ensure daily cron job for rclone sync script
+  ansible.builtin.cron:
+    name: run rclone sync script
+    hour: "6"
+    minute: "0"
+    job: /usr/local/bin/rclone-backup.sh

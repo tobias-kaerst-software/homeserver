@@ -19,6 +19,9 @@
 # - name: Configure secure ssh
 #   ansible.builtin.include_tasks: ssh.yml
 
+# - name: Setup Rclone
+#   ansible.builtin.include_tasks: rclone.yml
+
 - name: Get all user infos
   ansible.builtin.getent:
     database: passwd

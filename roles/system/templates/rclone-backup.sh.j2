@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ "`pidof -x $(basename $0) -o %PPID`" ]]; then
+    echo "rclone-backup.sh is already running"
+    exit;
+fi
+
+rclone sync -v --fast-list --exclude .DS_Store --exclude ._.DS_Store {{ backup_path }} {{ rclone_remote }}:{{ backup_dest }}
