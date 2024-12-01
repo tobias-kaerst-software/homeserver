@@ -7,6 +7,12 @@
 
 > 🚧 This project and it's documentation is still in development. Use at your own risk.
 
+Todo:
+
+- Immich
+- Kitchenowl
+- https://docs.ryot.io
+
 - https://www.authelia.com/reference/guides/generating-secure-values/#generating-a-random-alphanumeric-string
 
 ## Mount drive

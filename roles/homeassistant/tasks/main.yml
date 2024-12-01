@@ -1,0 +1,54 @@
+- name: Start homeassistant
+  when: homeassistant_enabled is true
+  block:
+    - name: Ensure homeassistant config directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/homeassistant"
+
+    - name: Template homeassistant configuration
+      ansible.builtin.template:
+        src: "configuration.yaml.j2"
+        dest: "{{ config_path }}/homeassistant/configuration.yaml"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Start homeassistant container
+      community.docker.docker_container:
+        name: "{{ homeassistant_container_name }}"
+        image: "{{ homeassistant_image_name }}:{{ homeassistant_image_version }}"
+        volumes:
+          - "{{ config_path }}/homeassistant:/config"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ docker_user_id }}"
+          PGID: "{{ docker_user_id }}"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.homeassistant.entrypoints: websecure
+          traefik.http.routers.homeassistant.rule: Host(`{{ homeassistant_container_name }}.{{ hostname }}`)
+          traefik.http.services.homeassistant.loadbalancer.server.port: "8123"
+          homepage.group: "Management"
+          homepage.name: "Homeassistant"
+          homepage.icon: "home-assistant.svg"
+          homepage.href: "https://{{ homeassistant_container_name }}.{{ hostname }}"
+          homepage.description: "Home automation platform."
+        network_mode: host
+        log_driver: "{{ docker_common_settings.log_driver }}"
+        log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "0"
+
+- name: Stop homeassistant
+  when: homeassistant_enabled is false
+  block:
+    - name: Stop homeassistant container
+      community.docker.docker_container:
+        name: "{{ homeassistant_container_name }}"
+        state: absent

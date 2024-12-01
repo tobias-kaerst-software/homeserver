@@ -44,6 +44,8 @@
           homepage.widget.type: "traefik"
           homepage.widget.url: "http://{{ traefik_container_name }}:8080"
         networks: "{{ docker_common_settings.networks }}"
+        etc_hosts:
+          host.docker.internal: 172.17.0.1
         log_driver: "{{ docker_common_settings.log_driver }}"
         log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"

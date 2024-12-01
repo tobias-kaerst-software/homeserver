@@ -2,7 +2,6 @@
   hosts: all
   become: true
   roles:
-    # - role: minecraft
     - role: system
 
     - role: traefik
@@ -29,3 +28,4 @@
     - role: paperless
 
     - role: wallos
+    - role: homeassistant

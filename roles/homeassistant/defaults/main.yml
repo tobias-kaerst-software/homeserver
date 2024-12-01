@@ -1,0 +1,5 @@
+homeassistant_enabled: true
+
+homeassistant_container_name: "homeassistant"
+homeassistant_image_name: "ghcr.io/home-assistant/home-assistant"
+homeassistant_image_version: "stable"
