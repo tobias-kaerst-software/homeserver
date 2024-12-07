@@ -1,0 +1,59 @@
+- name: Start wireguard
+  when: wireguard_enabled is true
+  block:
+    - name: Ensure wireguard config / data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ config_path }}/wireguard"
+
+    - name: Start wireguard container
+      community.docker.docker_container:
+        name: "{{ wireguard_container_name }}"
+        image: "{{ wireguard_image_name }}:{{ wireguard_image_version }}"
+        volumes:
+          - "{{ config_path }}/wireguard:/etc/wireguard"
+        ports:
+          - "{{ wireguard_vpn_port }}:{{ wireguard_vpn_port }}/udp"
+        env:
+          LANG: "de"
+          WG_HOST: "{{ wireguard_host }}"
+          PASSWORD_HASH: "{{ wireguard_password_hash }}"
+          PORT: "{{ wireguard_web_port }}"
+          WG_PORT: "{{ wireguard_vpn_port }}"
+        capabilities:
+          - NET_ADMIN
+          - SYS_MODULE
+        sysctls:
+          net.ipv4.conf.all.src_valid_mark: "1"
+          net.ipv4.ip_forward: "1"
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.wireguard.entrypoints: "websecure"
+          traefik.http.routers.wireguard.rule: "Host(`{{ wireguard_container_name }}.{{ hostname }}`)"
+          traefik.http.services.wireguard.loadbalancer.server.port: "{{ wireguard_web_port }}"
+          homepage.group: "System"
+          homepage.name: "wireguard"
+          homepage.icon: "wireguard.svg"
+          homepage.href: "https://{{ wireguard_container_name }}.{{ hostname }}"
+          homepage.description: "Enables secure connections between devices"
+          homepage.widget.type: "wgeasy"
+          homepage.widget.url: "http://{{ wireguard_container_name }}:{{ wireguard_web_port }}"
+          homepage.widget.password: "{{ wireguard_password }}"
+        networks: "{{ docker_common_settings.networks }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
+        restart_policy: "{{ docker_common_settings.restart_policy }}"
+        user: "0"
+
+- name: Stop wireguard
+  when: wireguard_enabled is false
+  block:
+    - name: Stop wireguard container
+      community.docker.docker_container:
+        name: "{{ wireguard_container_name }}"
+        state: absent

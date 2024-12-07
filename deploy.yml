@@ -8,6 +8,7 @@
     - role: watchtower
     - role: glances
     - role: homepage
+    - role: wireguard
 
     - role: loki
     - role: grafana
