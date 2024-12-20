@@ -1,0 +1,5 @@
+- name: Install and configure Homeserver
+  hosts: all
+  become: true
+  roles:
+    - role: minecraft

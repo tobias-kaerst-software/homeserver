@@ -6,3 +6,4 @@
 
 # Credentials
 inventory.yml
+*.inventory.yml
