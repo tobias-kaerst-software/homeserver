@@ -2,7 +2,7 @@ minecraft_enabled: true
 
 minecraft_container_name: "minecraft"
 minecraft_image_name: "itzg/minecraft-server"
-minecraft_image_version: "java8"
+minecraft_image_version: "java21"
 
 minecraft_environment_variables:
   EULA: "TRUE"
@@ -10,7 +10,10 @@ minecraft_environment_variables:
   MOD_PLATFORM: "AUTO_CURSEFORGE"
   CF_API_KEY: "$2a$10$yHMpbjcXHN52IcAhbL9bl.KtkbmTmJOlEDHQL8nhrVF0g/8IKY2x2"
   JVM_XX_OPTS: >
+    -Xms8G
+    -Xmx10G
     -XX:+UseG1GC
+    -XX:+ParallelRefProcEnabled
     -XX:MaxGCPauseMillis=200
     -XX:+UnlockExperimentalVMOptions
     -XX:+DisableExplicitGC
@@ -27,22 +30,51 @@ minecraft_environment_variables:
     -XX:SurvivorRatio=32
     -XX:+PerfDisableSharedMem
     -XX:MaxTenuringThreshold=1
+  
+  #  -Xss4M
+  #  -Dfile.encoding=GBK
+  #  -XX:+AggressiveOpts
+  #  -XX:+UseConcMarkSweepGC
+  #  -XX:+UseParNewGC
+  #  -XX:+CMSConcurrentMTEnabled
+  #  -XX:ParallelGCThreads=8
+  #  -Dsun.rmi.dgc.server.gcInterval=1800000
+  #  -XX:+UnlockExperimentalVMOptions
+  #  -XX:+ExplicitGCInvokesConcurrent
+  #  -XX:MaxGCPauseMillis=50
+  #  -XX:+AlwaysPreTouch
+  #  -XX:+UseStringDeduplication
+  #  -Dfml.ignorePatchDiscrepancies=true
+  #  -Dfml.ignoreInvalidMinecraftCertificates=true 
+  #  -XX:-OmitStackTraceInFastThrow 
+  #  -XX:+OptimizeStringConcat
+  #  -XX:+UseAdaptiveGCBoundary
+  #  -XX:NewRatio=3
+  #  -Dfml.readTimeout=90
+  #  -XX:+UseFastAccessorMethods
+  #  -XX:CMSInitiatingOccupancyFraction=75
+  #  -XX:+CMSScavengeBeforeRemark
+  #  -XX:+UseCMSInitiatingOccupancyOnly
 
-  CF_SLUG: "enigmatica-2-expert-extended"
-  CF_FILE_ID: "5964540"
-  MOTD: "\u00a7c\u00a7kAA\u00a7c Enigmatic 2 Expert Extended \u00a7c\u00a7kAA"
-  ICON: "https://media.forgecdn.net/avatars/thumbnails/820/88/256/256/638200951256555174.png"
+  CF_SLUG: "project-architect-2"
+  CF_FILE_ID: "6178672"
+  MOTD: "\u00a7c\u00a7kAA\u00a7c Project Architect 2 \u00a7c\u00a7kAA"
+  ICON: "https://media.forgecdn.net/avatars/thumbnails/1042/141/64/64/638568756937008342.png"
 
   DIFFICULTY: "hard"
   MAX_PLAYERS: "4"
   SPAWN_PROTECTION: "0"
   ALLOW_FLIGHT: "true"
-  MEMORY: "8G"
-  LEVEL_TYPE: "OTG"
-  LEVEL: "BBOP-Extended"
-  MAX_TICK_TIME: "240000"
-  NETWORK_COMPRESSION_THRESHOLD: "256"
+  MEMORY: "10G"
+  #LEVEL_TYPE: "BIOMESOP"
+  ENABLE_COMMAND_BLOCKS: "true"
+  MAX_TICK_TIME: "180000"
+  #NETWORK_COMPRESSION_THRESHOLD: "256"
   PVP: "true"
   VIEW_DISTANCE: "12"
 
-  CF_EXCLUDE_MODS: "7928,222378,225928,226406,226447,231453,236484,237701,238372,238891,240630,243478,245733,250398,262366,267602,267939,272515,280294,285492,285742,291727,293496,295736,297038,297363,299080,303122,306549,308240,310560,311927,313816,314002,316304,319656,327048,403303,408853,409087,417557,438451,446253,454215,461660,502649,513769,521590,616190,624967,782070,848933,874067,940521,1056812,1073925,1081085,1085598,1121489,1132293,1147522"
+  CF_EXCLUDE_MODS: >
+    254144, 7928,222378,225928,226406,226447,231453,236484,237701,238372,238891,240630,243478,245733,250398,262366,267602,
+    267939,272515,280294,285492,285742,291727,293496,295736,297038,297363,299080,303122,306549,308240,310560,311927,
+    313816,314002,316304,319656,327048,403303,408853,409087,417557,438451,446253,454215,461660,502649,513769,521590,
+    616190,624967,782070,848933,874067,940521,1056812,1073925,1081085,1085598,1121489,1132293,1147522

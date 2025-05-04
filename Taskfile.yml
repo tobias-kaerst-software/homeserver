@@ -21,6 +21,6 @@ tasks:
   run:
     desc: Runs the ansible deployment playbook
     cmds:
-      - ansible-playbook ripper.yml
+      - ansible-playbook deploy.yml
     env:
       DEFAULT_PRIVATE_ROLE_VARS: false

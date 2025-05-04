@@ -30,8 +30,8 @@
           homepage.widget.url: "http://{{ uptime_container_name }}:3001"
           homepage.widget.slug: "{{ uptime_default_slug }}"
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
 
 - name: Stop uptime

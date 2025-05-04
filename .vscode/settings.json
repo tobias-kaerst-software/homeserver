@@ -17,7 +17,7 @@
     "README.md": "LICENSE",
     "Taskfile.yml": ".gitignore,.editorconfig",
     "ansible.cfg": "requirements.yml,requirements.txt",
-    "deploy.yml": "inventory.yml,inventory.example.yml"
+    "deploy.yml": "inventory.yml,*.inventory.yml,inventory.example.yml,ripper.yml"
   },
 
   //! Ansible

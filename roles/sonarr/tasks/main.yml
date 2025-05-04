@@ -24,7 +24,7 @@
           traefik.enable: "true"
           traefik.http.routers.sonarr.entrypoints: "websecure"
           traefik.http.routers.sonarr.rule: "Host(`{{ sonarr_container_name }}.{{ hostname }}`)"
-          # traefik.http.routers.sonarr.middlewares: authelia@file
+          traefik.http.routers.sonarr.middlewares: authelia@file
           homepage.group: "Media"
           homepage.name: "Sonarr"
           homepage.icon: "sonarr.svg"
@@ -34,8 +34,8 @@
           homepage.widget.url: "http://{{ sonarr_container_name }}:8989"
           homepage.widget.key: "{{ sonarr_api_key }}"
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        ## log_driver: "{{ docker_common_settings.log_driver }}"
+        ## log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
         user: "0"
 

@@ -45,8 +45,8 @@
           homepage.widget.url: "http://{{ wireguard_container_name }}:{{ wireguard_web_port }}"
           homepage.widget.password: "{{ wireguard_password }}"
         networks: "{{ docker_common_settings.networks }}"
-        # log_driver: "{{ docker_common_settings.log_driver }}"
-        # log_options: "{{ docker_common_settings.log_options }}"
+        # # log_driver: "{{ docker_common_settings.log_driver }}"
+        # # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
         user: "0"
 

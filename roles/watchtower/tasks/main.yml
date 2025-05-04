@@ -23,8 +23,8 @@
           homepage.widget.url: "http://{{ watchtower_container_name }}:8080"
           homepage.widget.key: "{{ watchtower_token }}"
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
         user: "{{ docker_common_settings.user }}"
         groups:

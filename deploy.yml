@@ -10,9 +10,9 @@
     - role: homepage
     - role: wireguard
 
-    - role: loki
-    - role: grafana
-    - role: prometheus
+    # - role: loki
+    # - role: grafana
+    # - role: prometheus
     - role: uptime
 
     - role: authelia
@@ -29,4 +29,4 @@
     - role: paperless
 
     - role: wallos
-    - role: homeassistant
+    # - role: homeassistant

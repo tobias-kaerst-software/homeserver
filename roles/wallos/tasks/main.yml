@@ -31,8 +31,8 @@
           homepage.href: "https://{{ wallos_container_name }}.{{ hostname }}"
           homepage.description: "Wallos enables managing your finances."
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
         user: "0"
 

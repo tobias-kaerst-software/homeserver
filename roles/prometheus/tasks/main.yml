@@ -24,8 +24,8 @@
         name: "{{ prometheus_speedtest_container_name }}"
         image: "{{ prometheus_speedtest_image_name }}:{{ prometheus_speedtest_image_version }}"
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
 
     - name: Start prometheus node exporter container
@@ -37,8 +37,8 @@
         command:
           - "--path.rootfs=/host"
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
 
     - name: Start prometheus cadvisor container
@@ -55,8 +55,8 @@
           - "/dev/kmsg:/dev/kmsg"
         privileged: true
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
 
     - name: Start prometheus container
@@ -84,8 +84,8 @@
           homepage.widget.type: "prometheus"
           homepage.widget.url: "http://{{ prometheus_container_name }}:9090"
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
         user: "{{ docker_common_settings.user }}"
 

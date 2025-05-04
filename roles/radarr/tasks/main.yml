@@ -24,7 +24,7 @@
           traefik.enable: "true"
           traefik.http.routers.radarr.entrypoints: "websecure"
           traefik.http.routers.radarr.rule: "Host(`{{ radarr_container_name }}.{{ hostname }}`)"
-          # traefik.http.routers.radarr.middlewares: authelia@file
+          traefik.http.routers.radarr.middlewares: authelia@file
           homepage.group: "Media"
           homepage.name: "Radarr"
           homepage.icon: "radarr.svg"
@@ -34,8 +34,8 @@
           homepage.widget.url: "http://{{ radarr_container_name }}:7878"
           homepage.widget.key: "{{ radarr_api_key }}"
         networks: "{{ docker_common_settings.networks }}"
-        log_driver: "{{ docker_common_settings.log_driver }}"
-        log_options: "{{ docker_common_settings.log_options }}"
+        # log_driver: "{{ docker_common_settings.log_driver }}"
+        # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
         user: "0"
 
