@@ -45,7 +45,7 @@
         # log_driver: "{{ docker_common_settings.log_driver }}"
         # log_options: "{{ docker_common_settings.log_options }}"
         restart_policy: "{{ docker_common_settings.restart_policy }}"
-        user: "{{ docker_common_settings.user }}"
+        user: "0"
 
 - name: Stop jellyfin
   when: jellyfin_enabled is false

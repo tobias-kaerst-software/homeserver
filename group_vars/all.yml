@@ -1,7 +1,7 @@
 docker_common_settings:
   networks:
     - name: "{{ docker_network_name }}"
-  log_driver: "{{ loki_logging_driver }}"
-  log_options: "{{ loki_logging_options }}"
+  # log_driver: "{{ loki_logging_driver }}"
+  # log_options: "{{ loki_logging_options }}"
   restart_policy: unless-stopped
   user: "{{ docker_user_id }}"

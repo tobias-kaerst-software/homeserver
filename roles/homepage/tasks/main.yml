@@ -49,6 +49,8 @@
           - "{{ config_path }}/homepage:/app/config"
           - "{{ config_path }}/homepage/images:/app/public/images"
           - "{{ docker_socket }}:/var/run/docker.sock:ro"
+        env:
+          HOMEPAGE_ALLOWED_HOSTS: "{{ hostname }}"
         labels:
           traefik.enable: "true"
           traefik.http.routers.homepage.entrypoints: websecure
